@@ -1,0 +1,113 @@
+#!/bin/sh
+
+# Name: buildDocs
+# Purpose: use schemaSpy to build a set of HTML pages and associated images.
+#	These files serve as a schema browser for a Postgres database.  We
+#	then run a script to clean up these files with some MGI
+#	customizations.  The schemaSpy library itself is not altered -- only
+#	its output files.
+
+USAGE='buildDocs <server> <database> <user> <password file> <target dir>'
+
+if [ "${MGICONFIG}" = "" ]; then
+	MGICONFIG='/usr/local/mgi/live/mgiconfig'
+fi
+. ${MGICONFIG}/master.config.sh
+
+# server - name of the Postgres server
+# database - name of the database in the server
+# user - database username
+# password file - file containing the password for the user
+# target dir - directory to which to write the output
+
+# check that we have enough arguments
+if [ $# -ne 5 ]; then
+	echo "Wrong number of arguments"
+	echo ${USAGE}
+	exit 1
+fi
+
+# pick up the arguments and put them in the appropriate environment variables,
+# then export them for use by subprocesses
+
+PGHOST=$1
+export PGHOST
+
+PGDATABASE=$2
+export PGDATABASE
+
+PGUSER=$3
+export PGUSER
+
+PGPASSFILE=$4
+export PGPASSFILE
+
+PGPASSWORD=`cat ${PGPASSFILE}`
+
+PGPORT=5432
+export PGPORT
+
+TARGETDIR=`echo $5 | sed 's/\/$//'`
+export TARGETDIR
+
+# check the Java version (must be at least 1.6.0)
+
+JAVA_VERSION=`${JAVA} -version 2>&1 | head -1 | sed 's/\./ /g' | awk '{print $4}'`
+if [ ${JAVA_VERSION} -lt 6 ]; then
+	echo "Error: Java must be at least version 1.6"
+	${JAVA} -version 2>&1
+	exit 1
+fi
+
+# check the GraphViz version (must be at least 2.4)
+
+DOT_VERSION=`dot -V 2>&1 | sed 's/[a-zA-Z \-]//g' | sed 's/(.*//g' | sed 's/\./ /g' | awk '{print $2}'`
+
+if [ ${DOT_VERSION} -lt 4 ]; then
+	echo "Error: GraphViz's dot must be at least version 2.4"
+	dot -V 2>&1
+	exit 1
+fi
+
+# clean the directory, if it exists
+# make the directory if it does not exist
+
+if [ -d ${TARGETDIR} ]; then
+	rm -rf ${TARGETDIR}/*
+	echo "Cleaned out ${TARGETDIR}"
+else
+	mkdir ${TARGETDIR}
+	echo "Created ${TARGETDIR}"
+fi
+
+# run schemaSpy to generate the files
+
+echo "Running schemaSpy"
+${JAVA} -jar schemaSpy_5.0.0.jar -t pgsql -host ${PGHOST} -port 5432 -db ${PGDATABASE} -u ${PGUSER} -o ${TARGETDIR} -dp postgresql.jar -s public -p ${PGPASSWORD}
+
+# do post-processing of the files for MGI branding and some cleanup
+
+for file in `ls ${TARGETDIR}/*.html`
+do
+	./schemaSpyCleanup.py -a -d -i ${file}
+	if [ $? -eq 0 ]; then
+		echo "Post-processed ${file}"
+	else
+		echo "Failed on ${file}"
+		exit 1
+	fi
+done
+
+for file in `ls ${TARGETDIR}/tables/*.html`
+do
+	./schemaSpyCleanup.py -a -d ${file}
+	if [ $? -eq 0 ]; then
+		echo "Post-processed ${file}"
+	else
+		echo "Failed on ${file}"
+		exit 1
+	fi
+done
+
+echo "Done."
+
