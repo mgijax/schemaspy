@@ -43,6 +43,7 @@ PGPASSFILE=$4
 export PGPASSFILE
 
 PGPASSWORD=`cat ${PGPASSFILE}`
+export PGPASSWORD
 
 PGPORT=5432
 export PGPORT
@@ -83,7 +84,7 @@ fi
 # run schemaSpy to generate the files
 
 echo "Running schemaSpy"
-${JAVA} -jar schemaSpy_5.0.0.jar -t pgsql -host ${PGHOST} -port 5432 -db ${PGDATABASE} -u ${PGUSER} -o ${TARGETDIR} -dp postgresql.jar -s public -p ${PGPASSWORD}
+${JAVA} -jar schemaSpy_5.0.0.jar -t pgsql -host ${PGHOST} -port 5432 -db ${PGDATABASE} -u ${PGUSER} -o ${TARGETDIR} -dp postgresql.jar -s mgd -p ${PGPASSWORD}
 
 # do post-processing of the files for MGI branding and some cleanup
 
