@@ -36,46 +36,29 @@ USAGE='''Usage: %s [-a|-d|-i] <target file>
 BRANDING = '''
 <TABLE WIDTH="100%" BORDER=0 CELLPADDING=0 CELLSPACING=0>
  <TR>
-  <TD WIDTH="100%">
+  <TD WIDTH="100%" STYLE="background-color: #DFEFFF;">
    <TABLE WIDTH="100%" BORDER=0 CELLPADDING=0 CELLSPACING=0>
-    <TR>
-     <TD WIDTH="20%" VALIGN="center" ALIGN="left">
-      <A HREF="http://www.informatics.jax.org/" border=0><IMG SRC="http://www.informatics.jax.org/webshare/images/mgi_logo.jpg" BORDER=0 HEIGHT="70" WIDTH="160" ALT="Mouse Genome Informatics"></A>
-
-     </TD>
-     <TD WIDTH="60%" ALIGN="center" VALIGN="center" BGCOLOR="#ffffff">
-      <FONT COLOR="#000000" SIZE=5 FACE="Arial,Helvetica">
-       Schema Browser
-      </FONT>
-     </TD>
-     <TD WIDTH="20%" VALIGN="center" ALIGN="center" BGCOLOR="#ffffff">
-      &nbsp;
-     </TD>
-
-    </TR>
-    <TR>
-     <TD COLSPAN=3 style="background-color:#0000ff;">
-      <FONT face="Arial,Helvetica" color="#ffffff">
-       <B>&nbsp;Mouse Genome Informatics</B>
-      </FONT>
-     </TD>
-    </TR>
-
-    <TR>
-     <TD>
-      <FONT SIZE=-1 FACE="Arial,Helvetica">
-       <CENTER>
-        <A HREF="http://www.informatics.jax.org/" vlink="#0000ff">MGI Home</A>&nbsp;&nbsp;&nbsp;
-        <a href="http://www.informatics.jax.org/mgihome/help/help.shtml" vlink="#0000ff">Help</A>
-       </CENTER>
-      </FONT>
-
-     </TD>
-    </TR>
+     <TR>
+       <TD WIDTH="20%" STYLE="background-color: #DFEFFF;">
+         <A HREF="http://www.informatics.jax.org/mgihome/homepages/"><IMG SRC="http://www.informatics.jax.org/webshare/images/mgi_logo.gif" BORDER="0"></A>
+       </TD>
+       <TD WIDTH="60%" STYLE="font-family:Arial, Helvetica; font-size:24px; text-align: center; background-color: #DFEFFF;">Schema Browser</TD>
+       <TD width="20%" STYLE="background-color: #DFEFFF;"></TD>
+     </TR>
+     <TR STYLE="background-color: #DFEFFF;">
+       <TD STYLE="background-color: #DFEFFF;">
+	 <SPAN STYLE="font-size:10px; color:#002255;">
+	   &nbsp;<A CLASS="logoFooter" HREF="http://www.informatics.jax.org/mgihome/homepages/" target="_top">Home</A>&nbsp;
+	   |&nbsp;<A CLASS="logoFooter" HREF="http://www.informatics.jax.org/mgihome/projects/aboutmgi.shtml" target="_top">About</A>&nbsp;
+	   |&nbsp;<A CLASS="logoFooter" HREF="http://www.informatics.jax.org/mgihome/homepages/help.shtml" target="_top">Help</A>&nbsp;
+	   |&nbsp;<A CLASS="logoFooter" HREF="http://www.informatics.jax.org/faq/FAQ.shtml" TARGET="_top">FAQ</A>
+	 </SPAN>
+       </TD>
+       <TD COLSPAN="2" STYLE="background-color: #DFEFFF;">&nbsp;</TD>
+     </TR>
    </TABLE>
   </TD>
  </TR>
- <TR><TD>&nbsp;</TD></TR>
 </TABLE>
 '''
 
