@@ -1,0 +1,123 @@
+#!/bin/sh
+
+# Name: buildDocs
+# Purpose: use schemaSpy to build a set of HTML pages and associated images.
+#	These files serve as a schema browser for a database.  We
+#	then run a script to clean up these files with some MGI
+#	customizations.  The schemaSpy library itself is not altered -- only
+#	its output files.
+# Notes:
+#	1. We assume the traditional mgd_public account and password can be
+#		used to access the database.
+
+USAGE='buildDocs <server> <database> <schema> <target dir>'
+
+if [ "${MGICONFIG}" = "" ]; then
+	MGICONFIG='/usr/local/mgi/live/mgiconfig'
+fi
+. ${MGICONFIG}/master.config.sh
+
+# server - name of the server
+# database - name of the database in the server
+# schema - name of which schema in the database (even if public, must specify)
+# target dir - directory to which to write the output
+
+# check that we have enough arguments
+if [ $# -ne 4 ]; then
+	echo "Wrong number of arguments"
+	echo ${USAGE}
+	exit 1
+fi
+
+# pick up the arguments and put them in the appropriate environment variables,
+# then export them for use by subprocesses
+
+SYBHOST=$1
+export SYBHOST
+
+SYBDATABASE=$2
+export SYBDATABASE
+
+SYBUSER=mgd_public
+export SYBUSER
+
+SYBPASSWORD=openup
+export SYBPASSWORD
+
+SYBSCHEMA=$3
+export SYBSCHEMA
+
+SYBPORT=4114
+export SYBPORT
+
+# trim any trailing slash from the target directory
+
+TARGETDIR=`echo $4 | sed 's/\/$//'`
+export TARGETDIR
+
+# check the Java version (must be at least 1.6.0)
+JAVA=/usr/mgijava6/bin/java
+export JAVA
+
+JAVA_VERSION=`${JAVA} -version 2>&1 | head -1 | sed 's/\./ /g' | awk '{print $4}'`
+if [ ${JAVA_VERSION} -lt 6 ]; then
+	echo "Error: Java must be at least version 1.6"
+	${JAVA} -version 2>&1
+	exit 1
+fi
+
+# check the GraphViz version (must be at least 2.4)
+
+PATH="/usr/local/graphviz-2.26.3/bin:${PATH}"
+
+DOT_VERSION=`dot -V 2>&1 | sed 's/[a-zA-Z \-]//g' | sed 's/(.*//g' | sed 's/\./ /g' | awk '{print $2}'`
+
+if [ ${DOT_VERSION} -lt 4 ]; then
+	echo "Error: GraphViz's dot must be at least version 2.4 -- check PATH"
+	dot -V 2>&1
+	exit 1
+fi
+
+# clean the directory, if it exists
+# make the directory if it does not exist
+
+if [ -d ${TARGETDIR} ]; then
+	rm -rf ${TARGETDIR}/*
+	echo "Cleaned out ${TARGETDIR}"
+else
+	mkdir ${TARGETDIR}
+	echo "Created ${TARGETDIR}"
+fi
+
+# run schemaSpy to generate the files
+
+echo "Running schemaSpy"
+#${JAVA} -jar schemaSpy_5.0.0.jar -t pgql -host ${SYBHOST} -port 5432 -db ${SYBDATABASE} -u ${SYBUSER} -o ${TARGETDIR} -dp postgresql.jar -s ${SYBSCHEMA}  -p ${SYBPASSWORD}
+${JAVA} -jar schemaSpy_5.0.0.jar -t isql -host ${SYBHOST} -port ${SYBPORT} -db ${SYBDATABASE} -u ${SYBUSER} -o ${TARGETDIR} -dp ${JCONNECT} -s ${SYBSCHEMA}  -p ${SYBPASSWORD}
+
+# do post-processing of the files for MGI branding and some cleanup
+
+for file in `ls ${TARGETDIR}/*.html`
+do
+	./schemaSpyCleanup.py -a -d -i ${file} ${SYBHOST} ${SYBDATABASE} ${SYBSCHEMA} ${SYBUSER} ${SYBPASSWORD}
+	if [ $? -eq 0 ]; then
+		echo "Post-processed ${file}"
+	else
+		echo "Failed on ${file}"
+		exit 1
+	fi
+done
+
+for file in `ls ${TARGETDIR}/tables/*.html`
+do
+	./schemaSpyCleanup.py -a -d ${file} ${SYBHOST} ${SYBDATABASE} ${SYBSCHEMA} ${SYBUSER} ${SYBPASSWORD}
+	if [ $? -eq 0 ]; then
+		echo "Post-processed ${file}"
+	else
+		echo "Failed on ${file}"
+		exit 1
+	fi
+done
+
+echo "Done."
+
