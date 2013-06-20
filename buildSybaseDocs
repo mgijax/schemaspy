@@ -47,8 +47,7 @@ export SYBPASSWORD
 SYBSCHEMA=$3
 export SYBSCHEMA
 
-#SYBPORT=4114
-SYBPORT=4100
+SYBPORT=4114
 export SYBPORT
 
 # trim any trailing slash from the target directory
@@ -71,13 +70,13 @@ fi
 
 PATH="/usr/local/graphviz-2.26.3/bin:${PATH}"
 
-#DOT_VERSION=`dot -V 2>&1 | sed 's/[a-zA-Z \-]//g' | sed 's/(.*//g' | sed 's/\./ /g' | awk '{print $2}'`
-#
-#if [ ${DOT_VERSION} -lt 4 ]; then
-#	echo "Error: GraphViz's dot must be at least version 2.4 -- check PATH"
-#	dot -V 2>&1
-#	exit 1
-#fi
+DOT_VERSION=`dot -V 2>&1 | sed 's/[a-zA-Z \-]//g' | sed 's/(.*//g' | sed 's/\./ /g' | awk '{print $2}'`
+
+if [ ${DOT_VERSION} -lt 4 ]; then
+	echo "Error: GraphViz's dot must be at least version 2.4 -- check PATH"
+	dot -V 2>&1
+	exit 1
+fi
 
 # clean the directory, if it exists
 # make the directory if it does not exist
