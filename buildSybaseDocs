@@ -91,15 +91,9 @@ fi
 
 # run schemaSpy to generate the files
 
-echo $SYBHOST
-echo $SYBPORT
-echo $SYBDATABASE
-echo $SYBUSER
-echo $SYBSCHEMA
-echo $SYBPASSWORD
 echo "Running schemaSpy"
-echo ${JAVA} -jar schemaSpy_5.0.0.jar -t sybase -host ${SYBHOST} -port ${SYBPORT} -db ${SYBDATABASE} -u ${SYBUSER} -o ${TARGETDIR} -dp ${JCONNECT} -p ${SYBPASSWORD}
-${JAVA} -jar schemaSpy_5.0.0.jar -t sybase -host ${SYBHOST} -port ${SYBPORT} -db ${SYBDATABASE} -u ${SYBUSER} -o ${TARGETDIR} -dp ${JCONNECT} -p ${SYBPASSWORD}
+echo ${JAVA} -jar schemaSpy_5.0.0.jar -t sybase -host ${SYBHOST} -port ${SYBPORT} -db ${SYBDATABASE} -u ${SYBUSER} -p ${SYBPASSWORD} -o ${TARGETDIR} -dp ${JCONNECT}
+${JAVA} -jar schemaSpy_5.0.0.jar -t sybase -host ${SYBHOST} -port ${SYBPORT} -db ${SYBDATABASE} -u ${SYBUSER} -p ${SYBPASSWORD} -o ${TARGETDIR} -dp ${JCONNECT} -s dbo
 
 # do post-processing of the files for MGI branding and some cleanup
 
