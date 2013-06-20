@@ -47,7 +47,8 @@ export SYBPASSWORD
 SYBSCHEMA=$3
 export SYBSCHEMA
 
-SYBPORT=4114
+#SYBPORT=4114
+SYBPORT=4100
 export SYBPORT
 
 # trim any trailing slash from the target directory
