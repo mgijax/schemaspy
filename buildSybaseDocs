@@ -70,13 +70,13 @@ fi
 
 PATH="/usr/local/graphviz-2.26.3/bin:${PATH}"
 
-DOT_VERSION=`dot -V 2>&1 | sed 's/[a-zA-Z \-]//g' | sed 's/(.*//g' | sed 's/\./ /g' | awk '{print $2}'`
-
-if [ ${DOT_VERSION} -lt 4 ]; then
-	echo "Error: GraphViz's dot must be at least version 2.4 -- check PATH"
-	dot -V 2>&1
-	exit 1
-fi
+#DOT_VERSION=`dot -V 2>&1 | sed 's/[a-zA-Z \-]//g' | sed 's/(.*//g' | sed 's/\./ /g' | awk '{print $2}'`
+#
+#if [ ${DOT_VERSION} -lt 4 ]; then
+#	echo "Error: GraphViz's dot must be at least version 2.4 -- check PATH"
+#	dot -V 2>&1
+#	exit 1
+#fi
 
 # clean the directory, if it exists
 # make the directory if it does not exist
@@ -92,7 +92,6 @@ fi
 # run schemaSpy to generate the files
 
 echo "Running schemaSpy"
-#${JAVA} -jar schemaSpy_5.0.0.jar -t pgql -host ${SYBHOST} -port 5432 -db ${SYBDATABASE} -u ${SYBUSER} -o ${TARGETDIR} -dp postgresql.jar -s ${SYBSCHEMA}  -p ${SYBPASSWORD}
 ${JAVA} -jar schemaSpy_5.0.0.jar -t isql -host ${SYBHOST} -port ${SYBPORT} -db ${SYBDATABASE} -u ${SYBUSER} -o ${TARGETDIR} -dp ${JCONNECT} -s ${SYBSCHEMA}  -p ${SYBPASSWORD}
 
 # do post-processing of the files for MGI branding and some cleanup
