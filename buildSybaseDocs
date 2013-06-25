@@ -101,27 +101,27 @@ ${JAVA} -jar schemaSpy_5.0.0.jar -t sybase -host ${SYBHOST} -port ${SYBPORT} -db
 
 # do post-processing of the files for MGI branding and some cleanup
 
-for file in `ls ${TARGETDIR}/*.html`
-do
-	./schemaSpyCleanupSybase.py -a -d -i ${file} ${SYBHOST} ${SYBDATABASE} ${SYBSCHEMA} ${SYBUSER} ${SYBPASSWORD}
-	if [ $? -eq 0 ]; then
-		echo "Post-processed ${file}"
-	else
-		echo "Failed on ${file}"
-		exit 1
-	fi
-done
-
-for file in `ls ${TARGETDIR}/tables/*.html`
-do
-	./schemaSpyCleanupSybase.py -a -d ${file} ${SYBHOST} ${SYBDATABASE} ${SYBSCHEMA} ${SYBUSER} ${SYBPASSWORD}
-	if [ $? -eq 0 ]; then
-		echo "Post-processed ${file}"
-	else
-		echo "Failed on ${file}"
-		exit 1
-	fi
-done
+#for file in `ls ${TARGETDIR}/*.html`
+#do
+#	./schemaSpyCleanupSybase.py -a -d -i ${file} ${SYBHOST} ${SYBDATABASE} ${SYBSCHEMA} ${SYBUSER} ${SYBPASSWORD}
+#	if [ $? -eq 0 ]; then
+#		echo "Post-processed ${file}"
+#	else
+#		echo "Failed on ${file}"
+#		exit 1
+#	fi
+#done
+#
+#for file in `ls ${TARGETDIR}/tables/*.html`
+#do
+#	./schemaSpyCleanupSybase.py -a -d ${file} ${SYBHOST} ${SYBDATABASE} ${SYBSCHEMA} ${SYBUSER} ${SYBPASSWORD}
+#	if [ $? -eq 0 ]; then
+#		echo "Post-processed ${file}"
+#	else
+#		echo "Failed on ${file}"
+#		exit 1
+#	fi
+#done
 
 echo "Done."
 
