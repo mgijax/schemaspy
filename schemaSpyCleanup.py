@@ -13,9 +13,18 @@ import re
 import sys
 import getopt
 import runCommand
-import pg_db
 
-pg_db.setAutoTranslate(False)
+try:
+    if os.environ['DB_TYPE'] == 'postgres':
+        import db
+        db = db
+	db.setAutoTranslate(False)
+    else:
+        import db
+except:
+    import db
+    db = db
+    db.setAutoTranslate(False)
 
 USAGE='''Usage: %s [-a|-d|-i] <target file> <server> <database> <user> <password>
     Purpose:
@@ -101,6 +110,7 @@ def bailout (message, showUsage = False):
 	sys.exit(1)
 
 def processCommandLine():
+	global DB_TYPE
 	global HOST, DATABASE, USER, PASSWORD, PATH, TABLE, SCHEMA
 	global STRIP_DONATE_TAB, STRIP_ANOMALIES_TAB, SKIP_INDEXES
 
@@ -127,13 +137,14 @@ def processCommandLine():
 	PATH = args[0]
 	TABLE = os.path.basename(PATH).replace('.html', '')
 
+	DB_TYPE = os.environ['DB_TYPE']
 	HOST = args[1]
 	DATABASE = args[2]
 	SCHEMA = args[3]
 	USER = args[4]
 	PASSWORD = args[5]
 
-	pg_db.set_sqlLogin (USER, PASSWORD, HOST, DATABASE)
+	db.set_sqlLogin (USER, PASSWORD, HOST, DATABASE)
 	return
 
 def analyzeColumns (columns):
@@ -173,7 +184,12 @@ def getIndexDataSQL():
 	# try to get the index data using direct SQL (skip using psql, as it
 	# was problematic)
 
-	fp = open('getIndexes.sql', 'r')
+        if DB_TYPE == 'postgres':
+		sqlFile = 'getIndexes.sql'
+	else:
+		sqlFile = 'getIndexesSybase.sql'
+
+	fp = open(sqlFile, 'r')
 	lines = fp.readlines()
 	fp.close()
 
@@ -181,7 +197,7 @@ def getIndexDataSQL():
 	cmd = ' '.join(lines)
 	cmd = cmd.replace('MY_TABLE_NAME', '%s' % TABLE)
 
-	results = pg_db.sql(cmd, 'auto')
+	results = db.sql(cmd, 'auto')
 
 	indexes = []
 	for line in results:
