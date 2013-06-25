@@ -41,6 +41,14 @@ USAGE='''Usage: %s [-a|-d|-i] <target file> <server> <database> <user> <password
 	target file : the HTML file to edit and replace
 ''' % sys.argv[0]
 
+sybaseSQL = '''
+SELECT i.name, i.status
+FROM sysobjects o, sysindexes i
+WHERE o.name = '%s'
+and o.id = i.id
+and o.type = 'U'
+'''
+
 ###--- globals ---###
 
 BRANDING = '''
@@ -145,6 +153,7 @@ def processCommandLine():
 	PASSWORD = args[5]
 
 	db.set_sqlLogin (USER, PASSWORD, HOST, DATABASE)
+
 	return
 
 def analyzeColumns (columns):
@@ -186,16 +195,14 @@ def getIndexDataSQL():
 
         if DB_TYPE == 'postgres':
 		sqlFile = 'getIndexes.sql'
+		fp = open(sqlFile, 'r')
+		lines = fp.readlines()
+		fp.close()
+		lines = map(lambda x : x.rstrip(), lines)
+		cmd = ' '.join(lines)
+		cmd = cmd.replace('MY_TABLE_NAME', '%s' % TABLE)
 	else:
-		sqlFile = 'getIndexesSybase.sql'
-
-	fp = open(sqlFile, 'r')
-	lines = fp.readlines()
-	fp.close()
-
-	lines = map(lambda x : x.rstrip(), lines)
-	cmd = ' '.join(lines)
-	cmd = cmd.replace('MY_TABLE_NAME', '%s' % TABLE)
+		cmd = sybaseSQL % ('ACC_Accession')
 
 	results = db.sql(cmd, 'auto')
 
@@ -203,13 +210,31 @@ def getIndexDataSQL():
 	for line in results:
 		attributes = []
 
-		name = line['relname']
-		isPrimary = line['indisprimary']
-		isUnique = line['indisunique']
-		isClustered = line['indisclustered']
-		sql = line['indexSql'].lower()
-		constraint = line['indexConstraint']
+		if DB_TYPE == 'postgres':
+			name = line['relname']
+			isPrimary = line['indisprimary']
+			isUnique = line['indisunique']
+			isClustered = line['indisclustered']
+			sql = line['indexSql'].lower()
+			constraint = line['indexConstraint']
+		else:
+			isPrimary = 0
+			isUnique = 0
+			isClustered = 0
+			sql = ''
+			constraint = ''
 
+			name = line['name']
+
+			if line['status'] == 130:
+				isPrimary = 1
+				isUnique = 1
+				isClustered = 1
+			if line['status'] == 16:
+				isClustered = 1
+
+		print line
+		print isPrimary, isUnique, isClustered
 		out = analyzeCreateIndexStatement(sql)
 
 		if not out:

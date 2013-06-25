@@ -97,13 +97,13 @@ fi
 
 echo "Running schemaSpy"
 echo ${JAVA} -jar schemaSpy_5.0.0.jar -t sybase -host ${SYBHOST} -port ${SYBPORT} -db ${SYBDATABASE} -u ${SYBUSER} -p ${SYBPASSWORD} -o ${TARGETDIR} -dp ${JCONNECT}
-${JAVA} -jar schemaSpy_5.0.0.jar -t sybase -host ${SYBHOST} -port ${SYBPORT} -db ${SYBDATABASE} -u ${SYBUSER} -p ${SYBPASSWORD} -o ${TARGETDIR} -dp ${JCONNECT} -s dbo
+${JAVA} -jar schemaSpy_5.0.0.jar -t sybase -host ${SYBHOST} -port ${SYBPORT} -db ${SYBDATABASE} -u ${SYBUSER} -p ${SYBPASSWORD} -o ${TARGETDIR} -dp ${JCONNECT} -s dbo -hg
 
 # do post-processing of the files for MGI branding and some cleanup
 
 #for file in `ls ${TARGETDIR}/*.html`
 #do
-#	./schemaSpyCleanupSybase.py -a -d -i ${file} ${SYBHOST} ${SYBDATABASE} ${SYBSCHEMA} ${SYBUSER} ${SYBPASSWORD}
+#	./schemaSpyCleanup.py -a -d -i ${file} ${SYBSCHEMA} ${SYBDATABASE} ${SYBSCHEMA} ${SYBUSER} ${SYBPASSWORD}
 #	if [ $? -eq 0 ]; then
 #		echo "Post-processed ${file}"
 #	else
@@ -111,10 +111,10 @@ ${JAVA} -jar schemaSpy_5.0.0.jar -t sybase -host ${SYBHOST} -port ${SYBPORT} -db
 #		exit 1
 #	fi
 #done
-#
+
 #for file in `ls ${TARGETDIR}/tables/*.html`
 #do
-#	./schemaSpyCleanupSybase.py -a -d ${file} ${SYBHOST} ${SYBDATABASE} ${SYBSCHEMA} ${SYBUSER} ${SYBPASSWORD}
+#	./schemaSpyCleanup.py -a -d ${file} ${SYBSCHEMA} ${SYBDATABASE} ${SYBSCHEMA} ${SYBUSER} ${SYBPASSWORD}
 #	if [ $? -eq 0 ]; then
 #		echo "Post-processed ${file}"
 #	else
