@@ -71,9 +71,10 @@ fi
 
 # check the GraphViz version (must be at least 2.4)
 
-PATH="/usr/local/bin/graphviz-2.26.3/bin:${PATH}"
+PATH="/usr/local/graphviz-2.26.3/bin:${PATH}"
 
 DOT_VERSION=`dot -V 2>&1 | sed 's/[a-zA-Z \-]//g' | sed 's/(.*//g' | sed 's/\./ /g' | awk '{print $2}'`
+echo $DOT_VERSION
 
 if [ ${DOT_VERSION} -lt 4 ]; then
 	echo "Error: GraphViz's dot must be at least version 2.4 -- check PATH"
