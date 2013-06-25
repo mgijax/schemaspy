@@ -10,12 +10,12 @@
 #	1. We assume the traditional mgd_public account and password can be
 #		used to access the database.
 #
-# ./buildSybaseDocs rohan ${MGD_DBNAME} ${MGD_DBSERVER} ${DATALOADSOUTPUT}
-# ./buildSybaseDocs rohan ${MGD_DBNAME} ${MGD_DBSERVER} ${DATALOADSOUTPUT}/schemaspy/${MGD_DBSERVER}-${MGD_DBNAME}
+# ./buildSybaseDocs rohan 4100 ${MGD_DBNAME} ${MGD_DBSERVER} ${DATALOADSOUTPUT}/mgi/schemaspy
+# ./buildSybaseDocs rohan 4100 ${MGD_DBNAME} ${MGD_DBSERVER} ${DATALOADSOUTPUT}/mgi/schemaspy-${MGD_DBSERVER}-${MGD_DBNAME}
 #
 
 
-USAGE='buildDocs <server> <database> <schema> <target dir>'
+USAGE='buildDocs <server> <port> <database> <schema> <target dir>'
 
 if [ "${MGICONFIG}" = "" ]; then
 	MGICONFIG='/usr/local/mgi/live/mgiconfig'
@@ -23,12 +23,13 @@ fi
 . ${MGICONFIG}/master.config.sh
 
 # server - name of the server
+# port - name of port
 # database - name of the database in the server
 # schema - name of which schema in the database (even if public, must specify)
 # target dir - directory to which to write the output
 
 # check that we have enough arguments
-if [ $# -ne 4 ]; then
+if [ $# -ne 5 ]; then
 	echo "Wrong number of arguments"
 	echo ${USAGE}
 	exit 1
@@ -40,26 +41,24 @@ fi
 SYBHOST=$1
 export SYBHOST
 
-SYBDATABASE=$2
+SYBPORT=$2
+export SYBPORT
+
+SYBDATABASE=$3
 export SYBDATABASE
 
-#SYBUSER=${MGD_DBUSER}
-SYBUSER=${MGI_PUBLICUSER}
+SYBUSER=${MGD_DBUSER}
 export SYBUSER
 
-SYBPASSWORD=${MGI_PUBLICPASSWORD}
+SYBPASSWORD=`cat ${MGD_DBPASSWORDFILE}`
 export SYBPASSWORD
 
-SYBSCHEMA=$3
+SYBSCHEMA=$4
 export SYBSCHEMA
-
-#SYBPORT=4114
-SYBPORT=4100
-export SYBPORT
 
 # trim any trailing slash from the target directory
 
-TARGETDIR=`echo $4 | sed 's/\/$//'`
+TARGETDIR=`echo $5 | sed 's/\/$//'`
 export TARGETDIR
 
 # check the Java version (must be at least 1.6.0)
