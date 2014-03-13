@@ -1,0 +1,5 @@
+TAG: schemaspy-5-1-7-1
+DATE: 3/13/2014
+STAFF: dbm
+CHANGES:
+1) Initial tag after adding makeNewSchema.sh script
