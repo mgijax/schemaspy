@@ -14,17 +14,9 @@ import sys
 import getopt
 import runCommand
 
-try:
-    if os.environ['DB_TYPE'] == 'postgres':
-        import db
-        db = db
-	db.setAutoTranslate(False)
-    else:
-        import db
-except:
-    import db
-    db = db
-    db.setAutoTranslate(False)
+import pg_db
+db = pg_db
+db.setAutoTranslate(False)
 
 USAGE='''Usage: %s [-a|-d|-i] <target file> <server> <database> <user> <password>
     Purpose:
