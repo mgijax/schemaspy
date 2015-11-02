@@ -13,10 +13,9 @@ import re
 import sys
 import getopt
 import runCommand
+import dbManager
 
-import pg_db
-db = pg_db
-db.setAutoTranslate(False)
+dbm = None			# to be dbManager.postgresManager object
 
 USAGE='''Usage: %s [-a|-d|-i] <target file> <server> <database> <user> <password>
     Purpose:
@@ -32,14 +31,6 @@ USAGE='''Usage: %s [-a|-d|-i] <target file> <server> <database> <user> <password
     Required Parameters:
 	target file : the HTML file to edit and replace
 ''' % sys.argv[0]
-
-sybaseSQL = '''
-SELECT i.name, i.status
-FROM sysobjects o, sysindexes i
-WHERE o.name = '%s'
-and o.id = i.id
-and o.type = 'U'
-'''
 
 ###--- globals ---###
 
@@ -110,9 +101,9 @@ def bailout (message, showUsage = False):
 	sys.exit(1)
 
 def processCommandLine():
-	global DB_TYPE
 	global HOST, DATABASE, USER, PASSWORD, PATH, TABLE, SCHEMA
 	global STRIP_DONATE_TAB, STRIP_ANOMALIES_TAB, SKIP_INDEXES
+	global dbm
 
 	try:
 		(options, args) = getopt.getopt (sys.argv[1:], 'adi')
@@ -137,15 +128,14 @@ def processCommandLine():
 	PATH = args[0]
 	TABLE = os.path.basename(PATH).replace('.html', '')
 
-	DB_TYPE = os.environ['DB_TYPE']
 	HOST = args[1]
 	DATABASE = args[2]
 	SCHEMA = args[3]
 	USER = args[4]
 	PASSWORD = args[5]
 
-	db.set_sqlLogin (USER, PASSWORD, HOST, DATABASE)
-
+	dbm = dbManager.postgresManager(HOST, DATABASE, USER, PASSWORD)
+	dbm.setReturnAsSybase(True)
 	return
 
 def analyzeColumns (columns):
@@ -185,45 +175,26 @@ def getIndexDataSQL():
 	# try to get the index data using direct SQL (skip using psql, as it
 	# was problematic)
 
-        if DB_TYPE == 'postgres':
-		sqlFile = 'getIndexes.sql'
-		fp = open(sqlFile, 'r')
-		lines = fp.readlines()
-		fp.close()
-		lines = map(lambda x : x.rstrip(), lines)
-		cmd = ' '.join(lines)
-		cmd = cmd.replace('MY_TABLE_NAME', '%s' % TABLE)
-	else:
-		cmd = sybaseSQL % ('ACC_Accession')
+	sqlFile = 'getIndexes.sql'
+	fp = open(sqlFile, 'r')
+	lines = fp.readlines()
+	fp.close()
+	lines = map(lambda x : x.rstrip(), lines)
+	cmd = ' '.join(lines)
+	cmd = cmd.replace('MY_TABLE_NAME', '%s' % TABLE)
 
-	results = db.sql(cmd, 'auto')
+	results = dbm.execute(cmd)
 
 	indexes = []
 	for line in results:
 		attributes = []
 
-		if DB_TYPE == 'postgres':
-			name = line['relname']
-			isPrimary = line['indisprimary']
-			isUnique = line['indisunique']
-			isClustered = line['indisclustered']
-			sql = line['indexSql'].lower()
-			constraint = line['indexConstraint']
-		else:
-			isPrimary = 0
-			isUnique = 0
-			isClustered = 0
-			sql = ''
-			constraint = ''
-
-			name = line['name']
-
-			if line['status'] == 130:
-				isPrimary = 1
-				isUnique = 1
-				isClustered = 1
-			if line['status'] == 16:
-				isClustered = 1
+		name = line['relname']
+		isPrimary = line['indisprimary']
+		isUnique = line['indisunique']
+		isClustered = line['indisclustered']
+		sql = line['indexSql'].lower()
+		constraint = line['indexConstraint']
 
 		print line
 		print isPrimary, isUnique, isClustered
