@@ -50,6 +50,10 @@ export PGSCHEMA
 PGPORT=5432
 export PGPORT
 
+# Set the library path.
+LD_LIBRARY_PATH=/usr/local/lib:/usr/local/pgsql/lib
+export LD_LIBRARY_PATH
+
 # trim any trailing slash from the target directory
 
 TARGETDIR=`echo $4 | sed 's/\/$//'`
@@ -65,8 +69,6 @@ if [ ${JAVA_VERSION} -lt 6 ]; then
 fi
 
 # check the GraphViz version (must be at least 2.4)
-
-PATH="/usr/local/graphviz-2.26.3/bin:${PATH}"
 
 DOT_VERSION=`dot -V 2>&1 | sed 's/[a-zA-Z \-]//g' | sed 's/(.*//g' | sed 's/\./ /g' | awk '{print $2}'`
 

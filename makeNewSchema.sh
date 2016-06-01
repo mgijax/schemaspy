@@ -53,6 +53,10 @@ BUILD_PATH=${SCHEMA_SPY_DIR}/${BUILD_DIR}
 DB_TYPE=postgres
 export DB_TYPE
 
+# Set the library path.
+LD_LIBRARY_PATH=/usr/local/lib:/usr/local/pgsql/lib
+export LD_LIBRARY_PATH
+
 date | tee -a ${LOG}
 echo "Verify path settings" | tee -a ${LOG}
 
