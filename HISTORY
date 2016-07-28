@@ -2,7 +2,7 @@ TAG: schemaspy-6-0-5-2
 DATE: 7/28/2016
 STAFF: dbm
 CHANGES:
-1) makeNewSchema.sh: Updated to handle any schema
+1) makeNewSchema.sh: Updated to handle any schema (mgd, radar, snp, fe)
 
 TAG: schemaspy-6-0-4-1
 DATE: 6/1/2016
