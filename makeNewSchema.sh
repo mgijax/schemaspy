@@ -1,43 +1,62 @@
 #!/bin/sh
-
 #
-# Usage: makeNewSchema.sh  Server  Build_Directory
+# makeNewSchema.sh
+###########################################################################
 #
-# where
+# Purpose:
 #
-#     Server = The name of the Postgres server that has a copy of the pub
-#              database that the schema should be generated from.
-#              (e.g. mgi-pubfedb1 or mgi-pubfedb2)
+#     This script is a wrapper around the process that generates a visual
+#     representation of a given schema a database.
 #
-#     Build_Directory = The name of the directory that should be created
-#                       under /usr/local/mgi/live/schemaSpy and used to
-#                       build the new version of schemaSpy. For example,
-#                       mgd_N.NN, if the new version is associated with a
-#                       release number.
+# Usage:
+#
+#     makeNewSchema.sh DB_Server DB_Name DB_Schema Build_Directory
+#
+#     where
+#
+#         DB_Server = The name of the Postgres server that contains the
+#                     source database/schema.
+#
+#                     For example: mgi-pubfedb1 or mgi-pubfedb2
+#
+#         DB_Name = The name of the source database.
+#
+#                   For example: pub or fe
+#
+#         DB_Schema = The name of the source schema. This is also the name
+#                     of the sym link that will be created to point to the
+#                     new build directory.
+#
+#                     For example: radar, mgd, snp or fe
+#
+#         Build_Directory = The name of the directory that should be
+#                           created under /usr/local/mgi/live/schemaSpy and
+#                           used to build the new version of schemaSpy for
+#                           the given schema. For example, mgd_N.NN, if the
+#                           new version is associated with a release number.
 #
 # Example:
 #
-#    makeNewSchema.sh  mgi-pubfedb1  mgd_5.20
+#    makeNewSchema.sh  mgi-pubfedb1 pub mgd mgd_6.05
 #
-# Assumptions:
+#    This will create a new /usr/local/mgi/live/schemaSpy/mgd_6.05 directory
+#    for the mgi-pubfedb1.pub.mgd schema. Then it will create a sym link
+#    named "mgd" that points to this directory.
 #
-#    This script assumes that the specified Postgres server has a database
-#    named "pub" with a schema named "mgd". The public version of schemaSpy
-#    expects the mgd schema, so the intent is to run this script against
-#    one of the public Postgres servers that has a "pub" database with a
-#    "mgd" schema.
-#
+###########################################################################
 
 cd `dirname $0`
 
-if [ $# -ne 2 ]
+if [ $# -ne 4 ]
 then
-    echo "Usage: $0  Server  Build_Directory"
+    echo "Usage: $0 DB_Server DB_Name DB_Schema Build_Directory"
     exit 1
 fi
 
-SERVER_NAME=$1
-BUILD_DIR=$2
+DB_SERVER=$1
+DB_NAME=$2
+DB_SCHEMA=$3
+BUILD_DIR=$4
 
 LOG=`pwd`/`basename $0`.log
 rm -f ${LOG}
@@ -83,7 +102,7 @@ fi
 # Build the new schemaSpy version.
 #
 echo "Build new schemaSpy version: ${BUILD_PATH}" | tee -a ${LOG}
-./buildDocs ${SERVER_NAME} pub mgd ${BUILD_PATH} >> ${LOG} 2>&1
+./buildDocs ${DB_SERVER} ${DB_NAME} ${DB_SCHEMA} ${BUILD_PATH} >> ${LOG} 2>&1
 if [ $? -ne 0 ]
 then
     echo "Build failed" | tee -a ${LOG}
@@ -95,8 +114,8 @@ fi
 #
 echo "Activate new schemaSpy version" | tee -a ${LOG}
 cd ${SCHEMA_SPY_DIR}
-rm -f mgd
-ln -s ${BUILD_DIR} mgd
+rm -f ${DB_SCHEMA}
+ln -s ${BUILD_DIR} ${DB_SCHEMA}
 
 echo "SchemaSpy successfully updated" | tee -a ${LOG}
 date | tee -a ${LOG}
