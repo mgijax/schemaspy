@@ -68,10 +68,6 @@ SCHEMA_SPY_DIR=/usr/local/mgi/live/schemaSpy
 # Define the full path to the new build directory.
 BUILD_PATH=${SCHEMA_SPY_DIR}/${BUILD_DIR}
 
-# The schemaspy product expect DB_TYPE to be set.
-DB_TYPE=postgres
-export DB_TYPE
-
 # Set the library path.
 LD_LIBRARY_PATH=/usr/local/lib:/usr/local/pgsql/lib
 export LD_LIBRARY_PATH
