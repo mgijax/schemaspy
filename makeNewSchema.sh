@@ -17,7 +17,7 @@
 #         DB_Server = The name of the Postgres server that contains the
 #                     source database/schema.
 #
-#                     For example: mgi-pubfedb1 or mgi-pubfedb2
+#                     For example: bhmgipubdb01lp or bhmgipubdb02lp
 #
 #         DB_Name = The name of the source database.
 #
@@ -32,16 +32,16 @@
 #         Build_Directory = The name of the directory that should be
 #                           created under /usr/local/mgi/live/schemaSpy and
 #                           used to build the new version of schemaSpy for
-#                           the given schema. For example, mgd_N.NN, if the
+#                           the given schema. For example, fe_N.NN, if the
 #                           new version is associated with a release number.
 #
 # Example:
 #
-#    makeNewSchema.sh  mgi-pubfedb1 pub mgd mgd_6.05
+#    makeNewSchema.sh  bhmgipubdb01lp fe fe fe_6.99
 #
-#    This will create a new /usr/local/mgi/live/schemaSpy/mgd_6.05 directory
-#    for the mgi-pubfedb1.pub.mgd schema. Then it will create a sym link
-#    named "mgd" that points to this directory.
+#    This will create a new /usr/local/mgi/live/schemaSpy/fe_6.99 directory
+#    for the bhmgipubdb01lp.fe.fe schema. Then it will create a sym link
+#    named "fe" that points to this directory.
 #
 ###########################################################################
 
