@@ -1,3 +1,9 @@
+TAG: schemaspy-6-0-13-1
+DATE: 11/13/2018
+STAFF: dbm
+CHANGES:
+1) makeNewSchema.sh: Update comments to reflect server retirements
+
 TAG: schemaspy-6-0-5-3
 DATE: 8/31/2016
 STAFF: dbm
