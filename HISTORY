@@ -1,3 +1,9 @@
+TAG: schemaspy-6-0-22-1
+DATE: 11/07/2023
+STAFF: lec
+CHANGES:
+wts2-1323/fl3-619/other lib_py_postgres produts/db.setReturnAsSybase → db.setReturnAsMGI
+
 TAG: schemaspy-6-0-13-1
 DATE: 11/13/2018
 STAFF: dbm

@@ -135,7 +135,7 @@ def processCommandLine():
         PASSWORD = args[5]
 
         dbm = dbManager.postgresManager(HOST, DATABASE, USER, PASSWORD)
-        dbm.setReturnAsSybase(True)
+        dbm.setReturnAsMGI(True)
         return
 
 def analyzeColumns (columns):
