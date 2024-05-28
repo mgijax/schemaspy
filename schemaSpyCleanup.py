@@ -1,4 +1,4 @@
-#!/opt/python3.7/bin/python3.7
+#!/opt/python3.8/bin/python3
 
 # Name: schemaSpyCleanup.py
 # Purpose: to make MGI-specific customizations to the output HTML files

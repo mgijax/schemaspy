@@ -1,3 +1,11 @@
+TAG: schemaspy-6-0-23-1
+DATE: 05/28/2024
+STAFF: lec
+CHANGES:
+wts2-1397/Rocky
+set new PYTHON variable
+#       modified:   schemaSpyCleanup.py
+
 TAG: schemaspy-6-0-22-1
 DATE: 11/07/2023
 STAFF: lec
