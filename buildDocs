@@ -61,12 +61,12 @@ export TARGETDIR
 
 # check the Java version (must be at least 1.6.0)
 
-JAVA_VERSION=`${JAVA} -version 2>&1 | head -1 | sed 's/\./ /g' | awk '{print $4}'`
-if [ ${JAVA_VERSION} -lt 6 ]; then
-	echo "Error: Java must be at least version 1.6"
-	${JAVA} -version 2>&1
-	exit 1
-fi
+#JAVA_VERSION=`${JAVA} -version 2>&1 | head -1 | sed 's/\./ /g' | awk '{print $4}'`
+#if [ ${JAVA_VERSION} -lt 6 ]; then
+#	echo "Error: Java must be at least version 1.6"
+#	${JAVA} -version 2>&1
+#	exit 1
+#fi
 
 # check the GraphViz version (must be at least 2.4)
 
